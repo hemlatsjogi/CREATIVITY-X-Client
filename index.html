@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>GenAI - Image Generation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        #noRecord {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 25px;
+        }
+
+        #required {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 15px;
+            text-align: right;
+            display: none;
+        }
+
+        /* #logo {
+            width: 70px;
+            /* change size here (200, 300, 500...) 
+            height: 70px;
+            /* background-image: url("your-logo.png"); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        } */
+        .header {
+            display: flex;
+            align-items: center;
+            /* vertically center */
+            gap: 10px;
+            /* space between logo & name */
+        }
+
+        #logo {
+            width: 80px;
+            height: 80px;
+            /* background-image: url("./logo.png"); */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display">
+    <div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header
+                class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-4 sm:px-10 py-3 fixed top-0 left-0 right-0 z-10 bg-background-dark/80 backdrop-blur-sm">
+                <div class="flex items-center text-white">
+                    <div id="logo"><img src="logo.png" alt="logo"></div>
+
+                    <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CreatifyX</h2>
+                </div>
+                <!-- <div class="hidden md:flex items-center gap-9 text-sm">
+                    <a class="text-white/80 hover:text-white transition-colors" href="#">Gallery</a>
+                    <a class="text-white/80 hover:text-white transition-colors" href="#">Community</a>
+                    <a class="text-white/80 hover:text-white transition-colors" href="#">Pricing</a>
+                </div> -->
+                <div class="flex items-center gap-2">
+                    <!-- <button
+                        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+                        <span class="truncate">Sign Up</span>
+                    </button> -->
+                    <!-- <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                        data-alt="User avatar image"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAY6sXjUEO7L6cW3Wgzv136_C9KeWACL8CkVjJb1ON_XvDXuUq7K5T0gRxrL_vxBN-iGXejnDWpRAktgo4O11fruCBgW2Gt0VymE_FWmhzwZVJKgA6OKbq30D0HN34QkyAnz9zQ-OzGesyWBlG3hihwL_d4Z2tdL2Ur0Xrp62QraYieFyc_3hmjPErqAlaUbGhFk-WPE_rdGlOrGlcBryDJoDmQg-VdF7q-8zOZxLHd3j8jRpabx0ko_2weqS_dZ7bFXRHzeNJA88k");'>
+                    </div> -->
+                </div>
+            </header>
+            <main class="flex flex-1 justify-center px-4 py-24 sm:py-32">
+                <div class="layout-content-container flex flex-col max-w-2xl flex-1 items-center gap-8 text-center">
+                    <div class="flex flex-col gap-3">
+                        <h1 class="text-white text-4xl sm:text-5xl font-black leading-tight tracking-tighter">Bring Your
+                            Imagination to Life</h1>
+                        <p class="text-white/60 text-base font-normal leading-normal max-w-md mx-auto">Describe anything
+                            you can imagine and watch our AI bring it to life in stunning detail.</p>
+                    </div>
+                    <div class="flex flex-col w-full items-center gap-4">
+
+                        <div class="w-full">
+                            <label class="flex flex-col min-w-40 flex-1">
+                                <span
+                                    class="text-white text-base font-medium leading-normal pb-2 text-left sr-only">Prompt</span>
+                                <textarea id="imagePrompTextBox"
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-white/20 bg-white/10 focus:border-primary/80 min-h-32 placeholder:text-white/40 p-4 text-base font-normal leading-normal"
+                                    placeholder="A futuristic cityscape at sunset, with flying cars and neon lights, in a photorealistic style..."></textarea>
+                                <input type="hidden" id="searched_val" value="">
+                                <span id="required">Please fill the prompt first.</span>
+                            </label>
+                        </div>
+                        <button id="generateImageButton"
+                            class="flex min-w-[84px] w-full max-w-xs cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+                            <span class="truncate">Generate Image</span>
+                        </button>
+                    </div>
+                    <div id="loader" style="display: none;">
+                        <div class="flex w-full justify-center">
+                            <div
+                                class="bg-primary/20 border border-primary/50 rounded-lg py-3 px-6 inline-flex items-center justify-center">
+                                <p class="text-primary-200 text-base animate-pulse" style="color:white">
+                                    Generating Image......</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex w-full flex-col items-center gap-8 mt-8">
+                        <div class="flex w-full justify-center">
+                            <div id="searchedImgDiv"
+                                class="w-full aspect-video rounded-lg bg-center bg-no-repeat bg-cover max-w-lg"
+                                data-alt="A generated image of a futuristic cityscape at sunset, with flying cars and neon lights in a photorealistic style">
+                            </div>
+                        </div>
+                        <div id="confirmImageMotionDiv" style="display: none;">
+                            <div class="flex flex-col items-center gap-4" id="motion-question">
+                                <p class="text-white/80 text-lg">Do you want this image in motion?</p>
+                                <div class="flex items-center gap-4">
+                                    <button id="yesBtn"
+                                        class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-6 bg-green-600/90 text-white text-base font-bold leading-normal hover:bg-green-600 transition-colors">
+                                        <span class="truncate" onclick="confirmImageMotion('yes')">Yes</span>
+                                    </button>
+
+                                    <button id="noBtn"
+                                        class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-6 bg-white/20 text-white/80 text-base font-bold leading-normal hover:bg-white/30 transition-colors">
+                                        <span class="truncate" onclick="confirmImageMotion('no')">No</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ✅ Pop-up Modal -->
+                            <div id="confirmPopup"
+                                class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                                <div class="bg-[#1e1e2e] p-6 rounded-2xl text-center w-[320px]">
+                                    <p class="text-white text-lg mb-4">Are you sure you want to skip motion?</p>
+                                    <div class="flex justify-center gap-4">
+                                        <button id="confirmYes"
+                                            class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold">
+                                            Yes
+                                        </button>
+                                        <button id="confirmNo"
+                                            class="px-5 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full font-semibold">
+                                            No
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ✅ Motion Generation Section -->
+                        <div id="GeneratedMotionImageDiv">
+                            <div class="flex w-full justify-center">
+                                <div id="searchedMotionImgDiv"
+                                    class="w-full aspect-video rounded-lg bg-center bg-no-repeat bg-cover max-w-lg"
+                                    data-alt="A generated image of a futuristic cityscape at sunset, with flying cars and neon lights in a photorealistic style">
+                                </div>
+                            </div>
+
+                            <!-- ✅ Music Step -->
+                            <!-- <div class="flex flex-col items-center gap-4" id="music-section">
+                            <p class="text-white/80 text-lg">Do you want to add music to this image motion?</p>
+                            <div class="flex items-center gap-4">
+                                <button id="musicYes"
+                                    class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-6 bg-blue-600/90 text-white text-base font-bold leading-normal hover:bg-blue-600 transition-colors">
+                                    <span class="truncate">Yes</span>
+                                </button>
+                                <button id="musicNo"
+                                    class="flex min-w-[100px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-6 bg-white/20 text-white/80 text-base font-bold leading-normal hover:bg-white/30 transition-colors">
+                                    <span class="truncate">No</span>
+                                </button>
+                            </div>
+                        </div> -->
+
+                            <!-- ✅ Success Message -->
+                            <!-- <div class="flex flex-col items-center gap-4 hidden" id="music-success">
+                            <p class="text-green-400 text-lg font-medium">Music added successfully 🎵</p>
+                        </div> -->
+
+                            <!-- ✅ Pop-up Confirmation -->
+                            <!-- <div id="musicPopup"
+                            class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                            <div class="bg-[#1e1e2e] p-6 rounded-2xl text-center w-[320px]">
+                                <p class="text-white text-lg mb-4">Are you sure you want to skip adding music?</p>
+                                <div class="flex justify-center gap-4">
+                                    <button id="musicConfirmYes"
+                                        class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-semibold">
+                                        Yes
+                                    </button>
+                                    <button id="musicConfirmNo"
+                                        class="px-5 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-full font-semibold">
+                                        No
+                                    </button>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        </div>
+                        <div id="motionloader" style="display: none;">
+                            <div class="flex w-full justify-center">
+                                <div
+                                    class="bg-primary/20 border border-primary/50 rounded-lg py-3 px-6 inline-flex items-center justify-center">
+                                    <p class="text-primary-200 text-base animate-pulse" style="color:white">
+                                        Generating Motion Image......</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </main>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+<!-- Load jQuery from CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var backEndURL = 'http://localhost:3000';
+    // var backEndURL = 'https://gema-nonfermentative-nonflagitiously.ngrok-free.dev';
+    $(document).ready(function () {
+        $("#generateImageButton").on("click", function () {
+            var imgPromotTxt = $('#imagePrompTextBox').val();
+            if (imgPromotTxt.trim().length) {
+                $('#required').css('display', 'none');
+            } else {
+                $('#required').css('display', 'block');
+                return false;
+            }
+            $('#searchedMotionImgDiv').html("");
+            $('#searchedImgDiv').html("");
+            $('#loader').css('display', 'block');
+            $('#confirmImageMotionDiv').css('display', 'none');
+            $('#searched_val').val('');
+            $.ajax({
+                url: `${backEndURL}/fetch-image`,
+                data: { prompt: imgPromotTxt },
+                method: "GET",
+                dataType: "json",
+                // headers: {
+                //     "ngrok-skip-browser-warning": "true"
+                // },
+                success: function (response) {
+                    $('#loader').css('display', 'none');
+                    if (response?.data?.image) {
+                        $('#searched_val').val(response.data.search_val);
+                        $('#searchedImgDiv').html("");
+                        $('#searchedImgDiv').prepend('<img id="img" height="500" width="500" src="' + response.data.image + '" />')
+                        if (!response?.data?.isMotion) {
+                            $('#confirmImageMotionDiv').css('display', 'block');
+                        }
+                    } else {
+                        $('#searchedImgDiv').html("");
+                        $('#searchedImgDiv').prepend('<label id="noRecord">No record found</label>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#result").html(`<p class="error">Error: ${error}</p>`);
+                }
+            });
+        });
+    });
+
+    function confirmImageMotion(val) {
+        if (val == 'yes') {
+            var seachedVal = $('#searched_val').val();
+            $('#searchedMotionImgDiv').html("");
+            $('#motionloader').css('display', 'block');
+            $('#confirmImageMotionDiv').css('display', 'none');
+            $.ajax({
+                url: `${backEndURL}/fetch-motion-image`,
+                data: { prompt: seachedVal },
+                method: "GET",
+                dataType: "json",
+                // headers: {
+                //     "ngrok-skip-browser-warning": "true"
+                // },
+                success: function (response) {
+                    $('#motionloader').css('display', 'none');
+                    if (response?.data?.image) {
+                        $('#searchedMotionImgDiv').html("");
+                        $('#searchedMotionImgDiv').prepend('<img id="img" height="500" width="500" src="' + response.data.image + '" />');
+                    } else {
+                        $('#searchedMotionImgDiv').html("");
+                        $('#searchedMotionImgDiv').prepend('<label id="noRecord">No record found</label>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $("#result").html(`<p class="error">Error: ${error}</p>`);
+                }
+            });
+        }
+    }
+
+</script>
+
+</html>

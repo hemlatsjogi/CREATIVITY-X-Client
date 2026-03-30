@@ -1,3 +1,4 @@
+const API_URL = "https://creativity-x-server.onrender.com";
 const yesBtn = document.getElementById("yesBtn");
   const noBtn = document.getElementById("noBtn");
   const confirmPopup = document.getElementById("confirmPopup");
@@ -14,13 +15,27 @@ const yesBtn = document.getElementById("yesBtn");
   const musicConfirmNo = document.getElementById("musicConfirmNo");
   const musicSuccess = document.getElementById("music-success");
 
+//aded
 
-  // ✅ Proceed when Yes is clicked
-  yesBtn.addEventListener("click", () => {
-    // alert("Proceeding to motion generation...");
-    // Here you can call your motion generation function
-  });
+  yesBtn.addEventListener("click", async () => {
+  const prompt = "car"; // ya input field se lo
 
+  try {
+    const res = await fetch(`${API_URL}/fetch-image?prompt=${prompt}`);
+    const data = await res.json();
+
+    console.log(data);
+
+    // 👉 image show karo (agar element hai)
+    const img = document.getElementById("resultImage");
+    if (data?.data?.image) {
+      img.src = data.data.image;
+    }
+
+  } catch (err) {
+    console.error("Error:", err);
+  }
+});
   // ⚠️ Show confirmation when No is clicked
   noBtn.addEventListener("click", () => {
     confirmPopup.classList.remove("hidden");
